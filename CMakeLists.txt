@@ -45,12 +45,8 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
 )
 
-# project source files
-file(GLOB PROJECT_SOURCE_FILES CONFIGURE_DEPENDS Core/Src/*.c)
-
-# Add sources to executable
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-	Drivers/BSP/STM32H5xx_Nucleo/stm32h5xx_nucleo.c
+# HAL library sources
+set(HAL_SRC
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_cortex.c
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_icache.c
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_rcc.c
@@ -70,6 +66,17 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_usart_ex.c
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_uart_ex.c
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_uart.c
+)
+
+set_source_files_properties(${HAL_SRC} PROPERTIES COMPILE_FLAGS -Wno-unused-parameter)
+
+# project source files
+file(GLOB PROJECT_SOURCE_FILES CONFIGURE_DEPENDS Core/Src/*.c)
+
+# Add sources to executable
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+	Drivers/BSP/STM32H5xx_Nucleo/stm32h5xx_nucleo.c
+	${HAL_SRC}
 	Middlewares/Third_Party/FreeRTOS/Source/croutine.c
 	Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
 	Middlewares/Third_Party/FreeRTOS/Source/list.c
