@@ -418,3 +418,4 @@ board=NUCLEO-H563ZI
 boardIOC=true
 rtos.0.ip=STMicroelectronics.X-CUBE-FREERTOS.1.2.0
 rtos.0.tasks.0=allocationType,Dynamic;bufferName,NULL;codeGen,Default;controlBlockName,NULL;entry,StartDefaultTask;name,defaultTask;parameter,NULL;priority,osPriorityNormal;stackSize,128
+rtos.0.tasks.1=allocationType,Dynamic;bufferName,NULL;codeGen,Default;controlBlockName,NULL;entry,heartBeatStart;name,heartBeatTask;parameter,NULL;priority,osPriorityAboveNormal;stackSize,64

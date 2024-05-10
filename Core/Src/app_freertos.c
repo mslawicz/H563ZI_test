@@ -51,6 +51,13 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
+/* Definitions for heartBeatTask */
+osThreadId_t heartBeatTaskHandle;
+const osThreadAttr_t heartBeatTask_attributes = {
+  .name = "heartBeatTask",
+  .priority = (osPriority_t) osPriorityAboveNormal,
+  .stack_size = 64 * 4
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -85,6 +92,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
+  /* creation of heartBeatTask */
+  heartBeatTaskHandle = osThreadNew(heartBeatStart, NULL, &heartBeatTask_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -111,6 +121,26 @@ void StartDefaultTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END defaultTask */
+}
+
+/* USER CODE BEGIN Header_heartBeatStart */
+/**
+* @brief Function implementing the heartBeatTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_heartBeatStart */
+void heartBeatStart(void *argument)
+{
+  /* USER CODE BEGIN heartBeatTask */
+  UNUSED(argument);
+  /* Infinite loop */
+  for(;;)
+  {
+    HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_PIN);
+    osDelay(500);
+  }
+  /* USER CODE END heartBeatTask */
 }
 
 /* Private application code --------------------------------------------------*/

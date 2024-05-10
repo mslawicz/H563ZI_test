@@ -106,7 +106,6 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-	USE_NUCLEO_64
 	USE_HAL_DRIVER
 	STM32H563xx
 	STM32_THREAD_SAFE_STRATEGY=2
