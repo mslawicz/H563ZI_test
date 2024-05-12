@@ -75,6 +75,7 @@ file(GLOB PROJECT_SOURCE_FILES CONFIGURE_DEPENDS Core/Src/*.c)
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+	${PROJECT_SOURCE_FILES}
 	Drivers/BSP/STM32H5xx_Nucleo/stm32h5xx_nucleo.c
 	${HAL_SRC}
 	Middlewares/Third_Party/FreeRTOS/Source/croutine.c

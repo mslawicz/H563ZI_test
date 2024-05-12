@@ -91,6 +91,10 @@ void Error_Handler(void);
 #define RMII_TXD1_GPIO_Port GPIOB
 #define UCPD_FLT_Pin GPIO_PIN_7
 #define UCPD_FLT_GPIO_Port GPIOG
+#define TEST1_Pin GPIO_PIN_8
+#define TEST1_GPIO_Port GPIOC
+#define TEST2_Pin GPIO_PIN_9
+#define TEST2_GPIO_Port GPIOC
 #define UCDP_DBn_Pin GPIO_PIN_9
 #define UCDP_DBn_GPIO_Port GPIOA
 #define USB_FS_N_Pin GPIO_PIN_11

@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "serial_link.h"
 
 /* USER CODE END Includes */
 
@@ -57,6 +58,13 @@ const osThreadAttr_t heartBeatTask_attributes = {
   .name = "heartBeatTask",
   .priority = (osPriority_t) osPriorityAboveNormal,
   .stack_size = 64 * 4
+};
+/* Definitions for serialLinkTask */
+osThreadId_t serialLinkTaskHandle;
+const osThreadAttr_t serialLinkTask_attributes = {
+  .name = "serialLinkTask",
+  .priority = (osPriority_t) osPriorityAboveNormal,
+  .stack_size = 128 * 4
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,6 +102,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of heartBeatTask */
   heartBeatTaskHandle = osThreadNew(heartBeatStart, NULL, &heartBeatTask_attributes);
+
+  /* creation of serialLinkTask */
+  serialLinkTaskHandle = osThreadNew(serialLinkStart, NULL, &serialLinkTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -141,6 +152,21 @@ void heartBeatStart(void *argument)
     osDelay(500);
   }
   /* USER CODE END heartBeatTask */
+}
+
+/* USER CODE BEGIN Header_serialLinkStart */
+/**
+* @brief Function implementing the serialLinkTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_serialLinkStart */
+void serialLinkStart(void *argument)
+{
+  UNUSED(argument);
+  /* USER CODE BEGIN serialLinkTask */
+  serialLinkHandler();
+  /* USER CODE END serialLinkTask */
 }
 
 /* Private application code --------------------------------------------------*/
