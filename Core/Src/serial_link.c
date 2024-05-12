@@ -1,15 +1,24 @@
 #include "serial_link.h"
-#include "stm32h5xx_hal.h"
 #include "cmsis_os2.h"
+#include "stdio.h"
 
 uint8_t rxBuf[RX_BUF_SIZE];
 uint8_t txBuf[TX_BUF_SIZE];
 
+UART_HandleTypeDef* pSerialLinkUart = NULL;
+
 void serialLinkHandler(void)
 {
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(100);
-  }
+    uint8_t counter = 0;
+    /* Infinite loop */
+    for(;;)
+    {
+        int n = sprintf((char*)txBuf, "Sending message #%u.", counter++);
+        if(n>0)
+        {
+            //HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, n);
+            HAL_UART_Transmit(pSerialLinkUart, txBuf, n, 50);
+        }
+        osDelay(100);
+    }
 }
