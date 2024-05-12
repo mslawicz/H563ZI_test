@@ -163,8 +163,8 @@ void heartBeatStart(void *argument)
 /* USER CODE END Header_serialLinkStart */
 void serialLinkStart(void *argument)
 {
-  UNUSED(argument);
   /* USER CODE BEGIN serialLinkTask */
+  UNUSED(argument);
   serialLinkHandler();
   /* USER CODE END serialLinkTask */
 }

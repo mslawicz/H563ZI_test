@@ -16,8 +16,7 @@ void serialLinkHandler(void)
         int n = sprintf((char*)txBuf, "Sending message #%u.", counter++);
         if(n>0)
         {
-            //HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, n);
-            HAL_UART_Transmit(pSerialLinkUart, txBuf, n, 50);
+            HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, n);
         }
         osDelay(100);
     }
