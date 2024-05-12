@@ -45,8 +45,6 @@
 COM_InitTypeDef BspCOMInit;
 
 UART_HandleTypeDef huart2;
-DMA_NodeTypeDef Node_GPDMA1_Channel1;
-DMA_QListTypeDef List_GPDMA1_Channel1;
 DMA_HandleTypeDef handle_GPDMA1_Channel1;
 DMA_HandleTypeDef handle_GPDMA1_Channel0;
 
