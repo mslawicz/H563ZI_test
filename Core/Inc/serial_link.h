@@ -9,6 +9,7 @@
 extern void serialLinkHandler(void);
 extern UART_HandleTypeDef* pSerialLinkUart;
 extern DMA_HandleTypeDef* pSerialLink_GPDMA_Channel_RX;
+extern UART_HandleTypeDef* pComUart;
 
 
 #endif /* __SERIAL_LINK_H */

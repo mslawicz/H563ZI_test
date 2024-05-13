@@ -12,6 +12,7 @@ uint8_t comTxBuf[TX_BUF_SIZE];
 
 UART_HandleTypeDef* pSerialLinkUart = NULL;
 DMA_HandleTypeDef* pSerialLink_GPDMA_Channel_RX = NULL;
+UART_HandleTypeDef* pComUart = NULL;
 
 void requestDmaReception(void);
 
@@ -40,6 +41,7 @@ void serialLinkHandler(void)
   */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
+    static uint8_t comIdx = 0;
     if(huart == pSerialLinkUart)
     {
         UNUSED(Size);
@@ -48,12 +50,14 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
         /* Size provides the number of received characters */
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);
-        memcpy(comTxBuf, rxBuf, Size);
-        comTxBuf[Size] = 0;
-        printf("%s", comTxBuf);
-        if(Size < STR_BLOCK_SIZE)
+        memcpy(comTxBuf + comIdx, rxBuf, Size);
+        comIdx += Size;
+        if(Size < STR_BLOCK_SIZE)   //FIXME it does not work when the length of the last block == STR_BLOCK_SIZE!
         {
-            printf("\r\n");
+            comTxBuf[comIdx++] = '\r';
+            comTxBuf[comIdx++] = '\n';
+            HAL_UART_Transmit_DMA(pComUart, comTxBuf, comIdx);
+            comIdx = 0;
         }
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
     }
