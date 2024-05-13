@@ -1,10 +1,14 @@
 #include "serial_link.h"
 #include "cmsis_os2.h"
 #include "stdio.h"
+#include "string.h"
 #include "main.h"
+
+#define STR_BLOCK_SIZE  15
 
 uint8_t rxBuf[RX_BUF_SIZE];
 uint8_t txBuf[TX_BUF_SIZE];
+uint8_t comTxBuf[TX_BUF_SIZE];
 
 UART_HandleTypeDef* pSerialLinkUart = NULL;
 DMA_HandleTypeDef* pSerialLink_GPDMA_Channel_RX = NULL;
@@ -43,13 +47,22 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         requestDmaReception();
         HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
         /* Size provides the number of received characters */
+        HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);
+        memcpy(comTxBuf, rxBuf, Size);
+        comTxBuf[Size] = 0;
+        printf("%s", comTxBuf);
+        if(Size < STR_BLOCK_SIZE)
+        {
+            printf("\r\n");
+        }
+        HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
     }
 }
 
 void requestDmaReception(void)
 {
     /* request reception of a specified number of characters or to idle state */
-    HAL_UARTEx_ReceiveToIdle_DMA(pSerialLinkUart, rxBuf, 15);
+    HAL_UARTEx_ReceiveToIdle_DMA(pSerialLinkUart, rxBuf, STR_BLOCK_SIZE);
     /* disable half transfer interrupt just after the reception request */
     __HAL_DMA_DISABLE_IT(pSerialLink_GPDMA_Channel_RX, DMA_IT_HT);    
 }
