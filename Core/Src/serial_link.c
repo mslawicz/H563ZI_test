@@ -7,11 +7,14 @@ uint8_t rxBuf[RX_BUF_SIZE];
 uint8_t txBuf[TX_BUF_SIZE];
 
 UART_HandleTypeDef* pSerialLinkUart = NULL;
+DMA_HandleTypeDef* pSerialLink_GPDMA_Channel_RX = NULL;
+
+void requestDmaReception(void);
 
 void serialLinkHandler(void)
 {
     uint8_t counter = 0;
-    HAL_UARTEx_ReceiveToIdle_DMA(pSerialLinkUart, rxBuf, 15);
+    requestDmaReception();
     /* Infinite loop */
     for(;;)
     {
@@ -21,21 +24,6 @@ void serialLinkHandler(void)
             HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, n);
         }
         osDelay(100);
-    }
-}
-
-/**
-  * @brief  Rx Transfer completed callback.
-  * @param  huart UART handle.
-  * @retval None
-  */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if(huart == pSerialLinkUart)
-    {
-        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);
-        HAL_UARTEx_ReceiveToIdle_DMA(pSerialLinkUart, rxBuf, 15);
-        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
     }
 }
 
@@ -50,20 +38,18 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
     if(huart == pSerialLinkUart)
     {
-        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);
-        HAL_UARTEx_ReceiveToIdle_DMA(pSerialLinkUart, rxBuf, 15);
-        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
-        if(Size == 7)
-        {
-            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
-        }
-        else if(Size > 7)
-        {
-            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
-        }
-        else
-        {
-            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
-        }
+        UNUSED(Size);
+        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);
+        requestDmaReception();
+        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
+        /* Size provides the number of received characters */
     }
+}
+
+void requestDmaReception(void)
+{
+    /* request reception of a specified number of characters or to idle state */
+    HAL_UARTEx_ReceiveToIdle_DMA(pSerialLinkUart, rxBuf, 15);
+    /* disable half transfer interrupt just after the reception request */
+    __HAL_DMA_DISABLE_IT(pSerialLink_GPDMA_Channel_RX, DMA_IT_HT);    
 }

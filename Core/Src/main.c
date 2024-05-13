@@ -102,6 +102,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   pSerialLinkUart = &huart2;
+  pSerialLink_GPDMA_Channel_RX = &handle_GPDMA1_Channel1;
   /* USER CODE END 2 */
 
   /* Init scheduler */
