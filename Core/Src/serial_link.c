@@ -4,7 +4,7 @@
 #include "string.h"
 #include "main.h"
 
-#define STR_BLOCK_SIZE  14
+#define STR_BLOCK_SIZE  12
 
 uint8_t rxBuf[RX_BUF_SIZE];
 uint8_t txBuf[TX_BUF_SIZE];
@@ -43,12 +43,11 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
     if(huart == pSerialLinkUart)
     {
-        UNUSED(Size);
         HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);
         HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
         /* Size provides the number of received characters */
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);
-        sprintf((char*)comTxBuf, "%d%c", huart->RxXferCount, *huart->pRxBuffPtr);
+        sprintf((char*)comTxBuf, "%c%c%d", rxBuf[0], rxBuf[1], Size);
         HAL_UART_Transmit_DMA(pComUart, comTxBuf, strlen((char*)comTxBuf));
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
     }
