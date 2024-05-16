@@ -23,25 +23,10 @@ void serialLinkHandler(void)
     /* Infinite loop */
     for(;;)
     {
-        //int n = sprintf((char*)txBuf, "Sending message #%u.", counter++);
-        int n = sprintf((char*)txBuf, "0123456789abcdefghijABCDEFGHIJxyz___");
+        int n = sprintf((char*)txBuf, "Sending message #%u.", counter++);
         if(n>0)
         {
-            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);
-            if(counter == 0)
-            {
-                HAL_UART_DMAStop(pSerialLinkUart);
-                HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, 20);
-                counter = 1;
-            }
-            else
-            {
-                HAL_UART_DMAStop(pSerialLinkUart);
-                /* every other time the transmission buffer address is being changed */
-                HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf+5, 20);
-                counter = 0;
-            }            
-            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
+            HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, n);
         }
         osDelay(100);
     }
@@ -56,22 +41,15 @@ void serialLinkHandler(void)
   */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-    static uint8_t comIdx = 0;
     if(huart == pSerialLinkUart)
     {
         UNUSED(Size);
-        //huart->hdmarx->Instance->CBR1;
+        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
         /* Size provides the number of received characters */
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);
-        memcpy(comTxBuf + comIdx, rxBuf, Size);
-        comIdx += Size;
-        if(Size < STR_BLOCK_SIZE)   //FIXME it does not work when the length of the last block == STR_BLOCK_SIZE!
-        {
-            comTxBuf[comIdx++] = '\r';
-            comTxBuf[comIdx++] = '\n';
-            HAL_UART_Transmit_DMA(pComUart, comTxBuf, comIdx);
-            comIdx = 0;
-        }
+        sprintf((char*)comTxBuf, "%d", Size);
+        HAL_UART_Transmit_DMA(pComUart, comTxBuf, strlen((char*)comTxBuf));
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
     }
 }
