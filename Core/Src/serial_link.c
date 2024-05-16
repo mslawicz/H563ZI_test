@@ -4,7 +4,7 @@
 #include "string.h"
 #include "main.h"
 
-#define STR_BLOCK_SIZE  15
+#define STR_BLOCK_SIZE  14
 
 uint8_t rxBuf[RX_BUF_SIZE];
 uint8_t txBuf[TX_BUF_SIZE];
@@ -23,10 +23,25 @@ void serialLinkHandler(void)
     /* Infinite loop */
     for(;;)
     {
-        int n = sprintf((char*)txBuf, "Sending message #%u.", counter++);
+        //int n = sprintf((char*)txBuf, "Sending message #%u.", counter++);
+        int n = sprintf((char*)txBuf, "0123456789abcdefghijABCDEFGHIJxyz___");
         if(n>0)
         {
-            HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, n);
+            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);
+            if(counter == 0)
+            {
+                HAL_UART_DMAStop(pSerialLinkUart);
+                HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, 20);
+                counter = 1;
+            }
+            else
+            {
+                HAL_UART_DMAStop(pSerialLinkUart);
+                /* every other time the transmission buffer address is being changed */
+                HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf+5, 20);
+                counter = 0;
+            }            
+            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
         }
         osDelay(100);
     }
@@ -45,9 +60,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
     if(huart == pSerialLinkUart)
     {
         UNUSED(Size);
-        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);
-        requestDmaReception();
-        HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
+        //huart->hdmarx->Instance->CBR1;
         /* Size provides the number of received characters */
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);
         memcpy(comTxBuf + comIdx, rxBuf, Size);

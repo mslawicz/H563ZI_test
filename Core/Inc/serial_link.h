@@ -3,8 +3,8 @@
 
 #include "stm32h5xx_hal.h"
 
-#define RX_BUF_SIZE 30
-#define TX_BUF_SIZE 30
+#define RX_BUF_SIZE 50
+#define TX_BUF_SIZE 50
 
 extern void serialLinkHandler(void);
 extern UART_HandleTypeDef* pSerialLinkUart;
