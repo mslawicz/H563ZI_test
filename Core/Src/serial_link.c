@@ -48,7 +48,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);
         /* Size provides the number of received characters */
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);
-        sprintf((char*)comTxBuf, "%d", Size);
+        sprintf((char*)comTxBuf, "%d%c", huart->RxXferCount, *huart->pRxBuffPtr);
         HAL_UART_Transmit_DMA(pComUart, comTxBuf, strlen((char*)comTxBuf));
         HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET);
     }
