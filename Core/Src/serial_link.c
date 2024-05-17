@@ -70,3 +70,16 @@ void requestDmaReception(void)
     /* disable half transfer interrupt just after the reception request */
     __HAL_DMA_DISABLE_IT(pSerialLink_GPDMA_Channel_RX, DMA_IT_HT);    
 }
+
+/**
+  * @brief  BSP Push Button callback
+  * @param  Button Specifies the pin connected EXTI line
+  * @retval None
+  */
+void BSP_PB_Callback(Button_TypeDef Button)
+{
+    if(Button == BUTTON_USER)
+    {
+        HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
+    }
+}
