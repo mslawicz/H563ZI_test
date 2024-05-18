@@ -11,7 +11,6 @@ uint8_t comTxBuf[COM_BUF_SIZE];
 UART_HandleTypeDef* pSerialLinkUart = NULL;
 DMA_HandleTypeDef* pSerialLink_GPDMA_Channel_RX = NULL;
 UART_HandleTypeDef* pComUart = NULL;
-UART_HandleTypeDef* pExUart = NULL;
 
 void requestDmaReception(void);
 
@@ -26,7 +25,6 @@ void serialLinkHandler(void)
         if(n>0)
         {
             HAL_UART_Transmit_DMA(pSerialLinkUart, txBuf, n);
-            HAL_UART_Transmit_IT(pExUart, &counter, 1);
         }
         osDelay(100);
     }

@@ -50,8 +50,6 @@ extern "C" {
 
 /* USER CODE END EM */
 
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -120,7 +118,8 @@ void Error_Handler(void);
 #define ARD_D0_RX_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+extern uint16_t adcBuf[8];
+extern DMA_QListTypeDef Adc2UartQueue;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

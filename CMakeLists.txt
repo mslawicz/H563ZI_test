@@ -66,6 +66,8 @@ set(HAL_SRC
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_usart_ex.c
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_uart_ex.c
 	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_uart.c
+	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_adc.c
+	Drivers/STM32H5xx_HAL_Driver/Src/stm32h5xx_hal_adc_ex.c
 )
 
 set_source_files_properties(${HAL_SRC} PROPERTIES COMPILE_FLAGS -Wno-unused-parameter)
